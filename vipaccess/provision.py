@@ -169,13 +169,14 @@ def generate_otp_uri(token, secret):
     token_parameters = {}
     token_parameters['otp_type'] = urllib.quote('totp')
     token_parameters['app_name'] = urllib.quote('VIP Access')
-    token_parameters['account_name'] = urllib.quote(token['id'])
+    token_parameters['account_name'] = urllib.quote(token['id'], 'Unknown')
+    secret = secret.upper() if isinstance(secret, str) else base64.b32encode(secret).upper()
     token_parameters['parameters'] = urllib.urlencode(
         dict(
-            secret=base64.b32encode(secret).upper(),
-            digits=token['digits'],
-            period=token['period'],
-            algorithm=token['algorithm'],
+            secret=secret,
+            digits=token.get('digits', 6),
+            period=token.get('period', 30),
+            algorithm=token.get('algorithm', 'sha1'),
             issuer='Symantec'
             )
         )

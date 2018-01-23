@@ -81,6 +81,21 @@ def provision(p, args):
         print('Credential created and saved successfully: ' + dotfile.name)
         print('You will need the ID to register this credential: ' + otp_token['id'])
 
+def uri(p, args):
+    if args.secret:
+        secret = args.secret
+    else:
+        with open(args.dotfile, "r") as dotfile:
+            d = dict( l.strip().split(None, 1) for l in dotfile )
+        if 'version' not in d:
+            p.error('%s does not specify version' % args.dotfile)
+        elif d['version'] != '1':
+            p.error("%s specifies version %r, rather than expected '1'" % (args.dotfile, d['version']))
+        elif 'secret' not in d:
+            p.error('%s does not specify secret' % args.dotfile)
+        print('Token URI:\n')
+        print('    ' + vp.generate_otp_uri(d, d['secret']))
+
 def show(p, args):
     if args.secret:
         secret = args.secret
@@ -120,7 +135,7 @@ def main():
     m.add_argument('-p', '--print', action=PrintAction, nargs=0,
                    help="Print the new credential, but don't save it to a file")
     m.add_argument('-o', '--dotfile', type=PathType(type='file', exists=False), default=os.path.expanduser('~/.vipaccess'),
-                   help="File in which to store the new credential (default ~/.vipaccess")
+                   help="File in which to store the new credential (default ~/.vipaccess)")
     pprov.add_argument('-t', '--token-model', default='VSST',
                       help="VIP Access token model. Should be VSST (desktop token, default) or VSMT (mobile token). Some clients only accept one or the other.")
 
@@ -129,9 +144,18 @@ def main():
     m.add_argument('-s', '--secret',
                    help="Specify the token secret on the command line (base32 encoded)")
     m.add_argument('-f', '--dotfile', type=PathType(exists=True), default=os.path.expanduser('~/.vipaccess'),
-                   help="File in which the credential is stored (default ~/.vipaccess")
+                   help="File in which the credential is stored (default ~/.vipaccess)")
     pshow.add_argument('-v', '--verbose', action='store_true')
     pshow.set_defaults(func=show)
+
+    pshow = sp.add_parser('uri', help="Export the credential as a URI (otpauth://)")
+    m = pshow.add_mutually_exclusive_group()
+    m.add_argument('-s', '--secret',
+                   help="Specify the token secret on the command line (base32 encoded)")
+    m.add_argument('-f', '--dotfile', type=PathType(exists=True), default=os.path.expanduser('~/.vipaccess'),
+                   help="File in which the credential is stored (default ~/.vipaccess)")
+    pshow.add_argument('-v', '--verbose', action='store_true')
+    pshow.set_defaults(func=uri)
 
     p.set_default_subparser('show')
     args = p.parse_args()
