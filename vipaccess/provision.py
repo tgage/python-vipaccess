@@ -169,8 +169,8 @@ def generate_otp_uri(token, secret):
     token_parameters = {}
     token_parameters['otp_type'] = urllib.quote('totp')
     token_parameters['app_name'] = urllib.quote('VIP Access')
-    token_parameters['account_name'] = urllib.quote(token['id'], 'Unknown')
-    secret = secret.upper() if isinstance(secret, str) else base64.b32encode(secret).upper()
+    token_parameters['account_name'] = urllib.quote(token.get('id', 'Unknown'))
+    secret = base64.b32encode(secret).upper()
     token_parameters['parameters'] = urllib.urlencode(
         dict(
             secret=secret,

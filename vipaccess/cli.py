@@ -83,7 +83,7 @@ def provision(p, args):
 
 def uri(p, args):
     if args.secret:
-        secret = args.secret
+        d, secret = {}, args.secret
     else:
         with open(args.dotfile, "r") as dotfile:
             d = dict( l.strip().split(None, 1) for l in dotfile )
@@ -93,8 +93,14 @@ def uri(p, args):
             p.error("%s specifies version %r, rather than expected '1'" % (args.dotfile, d['version']))
         elif 'secret' not in d:
             p.error('%s does not specify secret' % args.dotfile)
-        print('Token URI:\n')
-        print('    ' + vp.generate_otp_uri(d, d['secret']))
+        secret = d['secret']
+            
+    try:
+        key = oath.google_authenticator.lenient_b32decode(secret)
+    except Exception as e:
+        p.error('error interpreting secret as base32: %s' % e)
+    print('Token URI:\n')
+    print('    ' + vp.generate_otp_uri(d, key))
 
 def show(p, args):
     if args.secret:
