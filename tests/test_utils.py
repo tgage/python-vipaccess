@@ -84,7 +84,7 @@ def test_generate_otp_uri():
         'timeskew': 0,
     }
     test_secret = b'ZqeD\xd9wg]"\x12\x1f7\xc7v6"\xf0\x13\\i'
-    expected_uri = urlparse.urlparse('otpauth://totp/VIP%20Access:VSST26070843?secret=LJYWKRGZO5TV2IQSD434O5RWELYBGXDJ&issuer=Symantec&digits=6&algorithm=sha1&period=30')
+    expected_uri = urlparse.urlparse('otpauth://totp/VIP%20Access:VSST26070843?secret=LJYWKRGZO5TV2IQSD434O5RWELYBGXDJ&issuer=Symantec&digits=6&algorithm=SHA1&period=30')
     generated_uri = urlparse.urlparse(generate_otp_uri(test_token, test_secret))
     assert generated_uri.scheme == expected_uri.scheme
     assert generated_uri.netloc == expected_uri.netloc
