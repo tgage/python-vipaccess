@@ -8,6 +8,7 @@ from vipaccess.patharg import PathType
 from vipaccess import provision as vp
 
 EXCL_WRITE = 'x' if sys.version_info>=(3,3) else 'wx'
+TOKEN_MODEL_ALIAS = {'SYDC': 'VSST', 'SYMC': 'VSMT'}
 
 # http://stackoverflow.com/a/26379693/20789
 
@@ -44,7 +45,9 @@ argparse.ArgumentParser.set_default_subparser = set_default_subparser
 
 def provision(p, args):
     print("Generating request...")
-    request = vp.generate_request(token_model=args.token_model)
+    token_model = args.token_model.upper()
+    token_model = TOKEN_MODEL_ALIAS.get(token_model, token_model)
+    request = vp.generate_request(token_model=token_model)
     print("Fetching provisioning response...")
     session = vp.requests.Session()
     response = vp.get_provisioning_response(request, session)
@@ -94,7 +97,7 @@ def uri(p, args):
         elif 'secret' not in d:
             p.error('%s does not specify secret' % args.dotfile)
         secret = d['secret']
-            
+
     try:
         key = oath.google_authenticator.lenient_b32decode(secret)
     except Exception as e:
@@ -143,8 +146,9 @@ def main():
     m.add_argument('-o', '--dotfile', type=PathType(type='file', exists=False), default=os.path.expanduser('~/.vipaccess'),
                    help="File in which to store the new credential (default ~/.vipaccess)")
     pprov.add_argument('-t', '--token-model', default='VSST',
-                      help="VIP Access token model. Should be VSST (desktop token, default) or VSMT (mobile token). Some clients only accept one or the other.")
-
+                      help=("VIP Access token model. Should be VSST (desktop token, default) or VSMT (mobile token). "
+                            "Some clients only accept one or the other. You can also use SYDC as an alias for VSST "
+                            "or SYMC as an alias for VSMT."))
     pshow = sp.add_parser('show', help="Show the current 6-digit token")
     m = pshow.add_mutually_exclusive_group()
     m.add_argument('-s', '--secret',
