@@ -109,11 +109,13 @@ optional arguments:
   -p, --print           Print the new credential, but don't save it to a file
   -o DOTFILE, --dotfile DOTFILE
                         File in which to store the new credential (default
-                        ~/.vipaccess
+                        ~/.vipaccess)
   -t TOKEN_MODEL, --token-model TOKEN_MODEL
-                        VIP Access token model. Should be VSST (desktop token,
+                        VIP Access token model. Normally VSST (desktop token,
                         default) or VSMT (mobile token). Some clients only
-                        accept one or the other.
+                        accept one or the other. Other more obscure token
+                        types also exist:
+                        https://support.symantec.com/en_US/article.TECH239895.html
 ```
 
 Here is an example of the output from `vipaccess provision -p`:
