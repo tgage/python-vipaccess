@@ -176,7 +176,7 @@ def generate_otp_uri(token, secret):
             secret=secret,
             digits=token.get('digits', 6),
             period=token.get('period', 30),
-            algorithm=token.get('algorithm', 'sha1'),
+            algorithm=token.get('algorithm', 'SHA1').upper(),
             issuer='Symantec'
             )
         )

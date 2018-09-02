@@ -94,7 +94,7 @@ def uri(p, args):
         elif 'secret' not in d:
             p.error('%s does not specify secret' % args.dotfile)
         secret = d['secret']
-            
+
     try:
         key = oath.google_authenticator.lenient_b32decode(secret)
     except Exception as e:
@@ -143,7 +143,9 @@ def main():
     m.add_argument('-o', '--dotfile', type=PathType(type='file', exists=False), default=os.path.expanduser('~/.vipaccess'),
                    help="File in which to store the new credential (default ~/.vipaccess)")
     pprov.add_argument('-t', '--token-model', default='VSST',
-                      help="VIP Access token model. Should be VSST (desktop token, default) or VSMT (mobile token). Some clients only accept one or the other.")
+                      help="VIP Access token model. Normally VSST (desktop token, default) or VSMT (mobile token). "
+                           "Some clients only accept one or the other. Other more obscure token types also exist: "
+                           "https://support.symantec.com/en_US/article.TECH239895.html")
 
     pshow = sp.add_parser('show', help="Show the current 6-digit token")
     m = pshow.add_mutually_exclusive_group()
