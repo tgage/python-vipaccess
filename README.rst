@@ -27,8 +27,10 @@ Dependencies
 -  `qrcode <https://pypi.python.org/pypi/qrcode/5.0.1>`__
 -  `requests <https://pypi.python.org/pypi/requests/>`__
 
-If you have ``pip`` installed on your system, you can install them with
-``pip install image lxml oath PyCrypto qrcode requests``.
+If you have ``pip`` installed on your system, you can easily install the dependencies by running
+``pip install -r requirements.txt`` in the project root directory.
+
+To install ``pip`` see the ``pip`` installation documentation `here <https://pip.pypa.io/en/stable/installing/>`__.
 
 Installation
 ------------
